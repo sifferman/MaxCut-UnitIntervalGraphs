@@ -124,43 +124,45 @@ UnitIntervalGraph::UnitIntervalGraph() {
     while ( sizes.size() < k )
         sizes.push_back( 1 + (rand() % 7) ) ;
 
-    if ( k == 0 ) throw BadConnectionsFormat() ;
-    if ( k >= 1 ) connections.push_back(1) ;
-    if ( k >= 2) connections.push_back(1) ;
-    while ( connections.size() < k )
-        connections.insert( connections.begin()+1, 2 ) ;
+    // if ( k == 0 ) throw BadConnectionsFormat() ;
+    // if ( k >= 1 ) connections.push_back(1) ;
+    // if ( k >= 2) connections.push_back(1) ;
+    // while ( connections.size() < k )
+    //     connections.insert( connections.begin()+1, 2 ) ;
 
-    // switch ( k ) {
-    //     case (0) : throw BadConnectionsFormat() ;
-    //     case (3) : connections.push_back(2) ;
-    //     case (2) : connections.insert(connections.begin(),1) ;
-    //     default  : connections.push_back(1) ; break ;
-    // } while ( connections.size() < k ) { // case k > 3
-    //     if      (   connections.size() == 0
-    //              || connections.size() == k-1 ) connections.push_back(1) ;
-    //     else if (   connections.size() == 1
-    //              || connections.size() == k-2 ) connections.push_back(2) ;
+    switch ( k ) {
+        case (0) : throw BadConnectionsFormat() ;
+        case (3) : connections.push_back(2) ;
+        case (2) : connections.insert(connections.begin(),1) ;
+        default  : connections.push_back(1) ; break ;
+    } while ( connections.size() < k ) { // case k > 3
+        if      (   connections.size() == 0
+                 || connections.size() == k-1 ) connections.push_back(1) ;
+        else if (   connections.size() == 1
+                 || connections.size() == k-2 ) connections.push_back(2) ;
 
-    //     else if ( connections.back() == 1 )
-    //         connections.push_back( 2 ) ;
-    //     else if ( connections.back() == k+1-connections.size() )
-    //         connections.push_back( connections.back()-1 ) ;
+        else if ( connections.back() == 1 )
+            connections.push_back( 2 ) ;
+        else if ( connections.back() == k+1-connections.size() )
+            connections.push_back( connections.back()-1 ) ;
         
-    //     else if ( connections.back() == k-connections.size() )
-    //         connections.push_back( connections.back()-1 + (rand()%2) ) ;
+        else if ( connections.back() == k-connections.size() )
+            connections.push_back( connections.back()-1 + (rand()%2) ) ;
 
-    //     else
-    //         connections.push_back( connections.back()-1 + (rand()%3) ) ;
-    // }
+        else
+            connections.push_back( connections.back()-1 + (rand()%3) ) ;
+    }
 
-    fill_MC_and_S( sizes, connections ) ;
+    fill_MC_and_TC( sizes, connections ) ;
+    
 }
 UnitIntervalGraph::UnitIntervalGraph( const vector<u2> & sizes, const vector<u2> & connections ) {
-    fill_MC_and_S( sizes, connections ) ;
+    fill_MC_and_TC( sizes, connections ) ;
 }
 
 
-void UnitIntervalGraph::fill_MC_and_S( const vector<u2> & sizes, const vector<u2> & connections ) {
+void UnitIntervalGraph::fill_MC_and_TC( const vector<u2> & sizes, const vector<u2> & connections ) {
+
     if ( sizes.size() != connections.size() ) throw MismatchedParameters() ;
     if ( sizes.size() == 0 ) return ;
 
@@ -174,45 +176,47 @@ void UnitIntervalGraph::fill_MC_and_S( const vector<u2> & sizes, const vector<u2
     // S.clear();
 
     // add the inputed number of sects
-    for ( u2 s = 0 ; s < sizes.size() ; s++ ) {
-        S.emplace_back();
+    for ( u2 tc = 0 ; tc < sizes.size() ; tc++ ) {
+        TC.push_back( make_shared<TwinClass>() );
 
         // while the new sect's size is less than the inputed size
-        while ( S.at(s)->V.size() < sizes.at(s) ) {
+        while ( TC.at(tc)->V.size() < sizes.at(tc) ) {
             
             // add vertex
             auto next_vertex = make_shared<vertex>();
             V.insert( next_vertex ) ;
 
             // add it to sect and set its branches
-            S.at(s)->addVertex( next_vertex ) ;
+            TC.at(tc)->addVertex( next_vertex ) ;
+
         }
 
     }
 
 
-    MC.emplace_back();
-    S.at(0)->addToMaximalClique( MC.back() ) ;
+
+    MC.push_back( make_shared<MaximalClique>() );
+    TC.at(0)->addToMaximalClique( MC.back() ) ;
 
 
-    for ( u2 s = 1 ; s < connections.size() ; s++ ) {
-        if ( connections.at(s) == 0 ) throw BadConnectionsFormat() ;
+    for ( u2 tc = 1 ; tc < connections.size() ; tc++ ) {
+        if ( connections.at(tc) == 0 ) throw BadConnectionsFormat() ;
 
-        // mc starts as the first MaximalCLique containing S.at(s-1)
+        // mc starts as the first MaximalCLique containing TC.at(tc-1)
         u2 mc = 0 ;
-        while ( !MC.at(mc)->contains( S.at(s-1) ) ) mc++ ;
+        while ( !MC.at(mc)->contains( TC.at(tc-1) ) ) mc++ ;
 
-        char delta = connections.at(s) - connections.at(s-1) ;
+        char delta = connections.at(tc) - connections.at(tc-1) ;
 
         switch ( delta ) {
             case  1 : // add first mc
-                S.at(s)->addToMaximalClique( MC.at(mc) ) ;
+                TC.at(tc)->addToMaximalClique( MC.at(mc) ) ;
             case  0 : // push new mc
-                MC.emplace_back();
+                MC.push_back( make_shared<MaximalClique>() );
             case -1 : // add remaining 
                 mc++;
                 while ( mc < MC.size() ) {
-                    S.at(s)->addToMaximalClique( MC.at(mc) ) ;
+                    TC.at(tc)->addToMaximalClique( MC.at(mc) ) ;
                     mc++ ;
                 }
                 break;
@@ -220,38 +224,38 @@ void UnitIntervalGraph::fill_MC_and_S( const vector<u2> & sizes, const vector<u2
         }
 
     }
+
     cout << "sect size: ";
-    for ( auto s : S ) cout << s->n() << " "; cout << endl;
+    for ( auto tc : TC ) cout << tc->n() << " "; cout << endl;
     cout << "connects : ";
-    for ( auto s : S ) cout << s->numConnections() << " "; cout << endl;
+    for ( auto tc : TC ) cout << tc->numConnections() << " "; cout << endl;
 
     updateEdges() ;
-
 
 }
 
 string line( const u2 & , const u2 & ) ;
 
 void UnitIntervalGraph::print() const {
-    cout << "                        Sect sizes :   " ;
-    for ( u2 s = 0 ; s < S.size() ; s++ )
-        cout << S.at(s)->n() << " " ; cout << "\n\n" ;
+    cout << "                        TwinClass sizes :   " ;
+    for ( u2 tc = 0 ; tc < TC.size() ; tc++ )
+        cout << TC.at(tc)->n() << " " ; cout << "\n\n" ;
 
-    cout << "Number of MCs Each Sect Belongs To :   ";
-    for ( u2 s = 0 ; s < S.size() ; s++ )
-        cout << S.at(s)->numConnections() << " " ; cout << endl ;
+    cout << "Number of MCs Each TwinClass Belongs To :   ";
+    for ( u2 tc = 0 ; tc < TC.size() ; tc++ )
+        cout << TC.at(tc)->numConnections() << " " ; cout << endl ;
     
-    string next_line = line( 0 , MC.at(0)->S.size() ) ;
-    while ( next_line.length() < 2*S.size()+2 ) next_line += " " ;
+    string next_line = line( 0 , MC.at(0)->TC.size() ) ;
+    while ( next_line.length() < 2*TC.size()+2 ) next_line += " " ;
 
-    cout << "Number of Sects in Each Mxml Clq :   "
+    cout << "       Number of Sects in Each Mxml Clq :   "
          << next_line << MC.at(0)->n() 
          << endl ;
-    for ( u2 mc = 1, s = 0 ; mc < MC.size() ; mc++ ) {
-        while ( !S.at(s)->isMemberOf( MC.at(mc) )  ) s++ ;
+    for ( u2 mc = 1, tc = 0 ; mc < MC.size() ; mc++ ) {
+        while ( !TC.at(tc)->isMemberOf( MC.at(mc) )  ) tc++ ;
 
-        next_line = line( s , MC.at(mc)->S.size() ) ;
-        while ( next_line.length() < 2*S.size()+2 ) next_line += " " ;
+        next_line = line( tc, MC.at(mc)->TC.size() ) ;
+        while ( next_line.length() < 2*TC.size()+2 ) next_line += " " ;
 
         cout << "                                     "
              << next_line << MC.at(mc)->n() 
@@ -259,16 +263,16 @@ void UnitIntervalGraph::print() const {
     }
     for ( u4 i = 0 ; i < k() ; i++ )
         cout << 
-        S.at(i)->n() * ( S.at(i)->numBranches() - S.at(i)->n() + 1 )
+        TC.at(i)->n() * ( TC.at(i)->numBranches() - TC.at(i)->n() + 1 )
         << " " ; cout << endl ;
     for ( u4 i = 0 ; i < k() ; i++ )
         cout << 
-        ( S.at(i)->n() * ( S.at(i)->n() - 1) ) / 2
+        ( TC.at(i)->n() * ( TC.at(i)->n() - 1) ) / 2
         << " " ; cout << endl ;
     for ( u4 i = 0 ; i < k() ; i++ )
         cout << 
-        ( S.at(i)->n() * ( S.at(i)->numBranches() - S.at(i)->n() + 1 ) ) +
-        ( ( S.at(i)->n() * ( S.at(i)->n() - 1) ) / 2 )
+        ( TC.at(i)->n() * ( TC.at(i)->numBranches() - TC.at(i)->n() + 1 ) ) +
+        ( ( TC.at(i)->n() * ( TC.at(i)->n() - 1) ) / 2 )
         << " " ; cout << endl ;
 }
 
@@ -335,22 +339,22 @@ void Clique::addVertex( shared_ptr<vertex> & next ) {
 ///////////////////
 
 // O( S::n )
-void MaximalClique::addSect( std::shared_ptr<Sect> & sect ) {
-    // add all verticies in sect to V
-    for ( auto v : sect->V )
+void MaximalClique::addSect( std::shared_ptr<TwinClass> & tc ) {
+    // add all verticies in tc to V
+    for ( auto v : tc->V )
         addVertex( v ) ;
-    // add this to sect.MC;
+    // add this to tc.MC;
     auto THIS = getThis();
-    if ( !sect->isMemberOf( THIS ) )
-        sect->MC.insert( THIS );
-    // add sect to S
-    if ( !contains( sect ) )
-        S.insert( sect ) ;
+    if ( !tc->isMemberOf( THIS ) )
+        tc->MC.insert( THIS );
+    // add tc to S
+    if ( !contains( tc ) )
+        TC.insert( tc ) ;
 }
 
-// O( log( MC::numSects ) )
-bool MaximalClique::contains( std::shared_ptr<Sect> & sect ) const { 
-    return ( S.find( sect ) != S.end() ) ;
+// O( log( MC::numTwinClasses ) )
+bool MaximalClique::contains( std::shared_ptr<TwinClass> & tc ) const { 
+    return ( TC.find( tc ) != TC.end() ) ;
 }
 
 
@@ -367,12 +371,12 @@ bool MaximalClique::contains( std::shared_ptr<Sect> & sect ) const {
 //////////
 
 // O( S::n )
-void Sect::addToMaximalClique( std::shared_ptr<MaximalClique> & mc) {
+void TwinClass::addToMaximalClique( std::shared_ptr<MaximalClique> & mc ) {
     auto THIS = getThis();
     mc->addSect( THIS ) ;
 }
 
 // O( log( S::numConnections ) )
-bool Sect::isMemberOf( std::shared_ptr<MaximalClique> & mc ) const {
+bool TwinClass::isMemberOf( std::shared_ptr<MaximalClique> & mc ) const {
     return ( MC.find( mc ) != MC.cend() ) ;
 }

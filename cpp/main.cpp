@@ -10,36 +10,30 @@
 #include <sstream>
 #include <string>
 
+// #include "clipp/clipp.h"
+// using namespace clipp;
+using std::cout; using std::string;
 
-using namespace std;
 
-class BadCommandParameters { } ;
-
-vector<u2> stringToCut( const string & in );
+std::vector<u2> stringToCut( const string & in );
 void testMemory() ;
-void readFile(  const int & argc ) ;
+// void readFile(  const int & argc ) ;
 
 int main( int argc, char ** argv ) { srand( time(NULL) );
-
-    // vector<u2> sizes       = stringToCut( "1 2 1" );
-    // vector<u2> connections = stringToCut( "1 2 1" );
-    // PerfectStaircase( sizes ).ES_maxcut();
-
-    // readFile( argc ) ;
     // testMemory() ;
 
     UnitIntervalGraph().ES_maxcut() ;
     
-
+    cout << "done\n";
     return 0 ;
 }
 
-vector<u2> stringToCut( const string & in ) {
+std::vector<u2> stringToCut( const string & in ) {
 
-    vector<u2> out ;
+    std::vector<u2> out ;
     string next;
 
-    istringstream iss(in);
+    std::istringstream iss(in);
 
     for( string next ; iss >> next ; ) {
         out.push_back( stoi( next ) );
@@ -49,45 +43,45 @@ vector<u2> stringToCut( const string & in ) {
 }
 
 void testMemory() {
-    for ( size_t i = 1 ; true ; i++ )
+    for ( ; true ; )
         UnitIntervalGraph g;
 }
 
-void readFile(  const int & argc ) {
-    string line;
-    UnitIntervalGraph * graph_pointer;
+// void readFile(  const int & argc ) {
+//     string line;
+//     UnitIntervalGraph * graph_pointer;
 
     
 
-    if ( argc == 1 ) {
-        ifstream ifs( "graph.txt" );
+//     if ( argc == 1 ) {
+//         std::ifstream ifs( "graph.txt" );
 
-        getline( ifs, line );
-        vector<u2> sizes = stringToCut( line );
-        getline( ifs, line );
-        vector<u2> connections = stringToCut( line );
+//         std::getline( ifs, line );
+//         std::vector<u2> sizes = stringToCut( line );
+//         std::getline( ifs, line );
+//         std::vector<u2> connections = stringToCut( line );
 
-        graph_pointer = new UnitIntervalGraph( sizes, connections );
-    }
-    else if ( argc == 2 ) {
-        graph_pointer = new UnitIntervalGraph();
-    }
-    else {
-        throw BadCommandParameters() ;      
-    }
+//         graph_pointer = new UnitIntervalGraph( sizes, connections );
+//     }
+//     else if ( argc == 2 ) {
+//         graph_pointer = new UnitIntervalGraph();
+//     }
+//     else {
+//         throw BadCommandParameters() ;      
+//     }
 
 
 
-    graph_pointer->ES_maxcut();
+//     graph_pointer->ES_maxcut();
 
-    cout << "Enter cut arrangment: (" << graph_pointer->k() << ")\n\n";
+//     cout << "Enter cut arrangment: (" << graph_pointer->k() << ")\n\n";
 
-    try {  while (true) {
-        getline( cin, line );
-        cout << "Cut size: " << graph_pointer->cutArrangement( stringToCut(line) ) << "\n\n";
-    }  } catch ( invalid_argument() ) { }
+//     try {  while (true) {
+//         std::getline( std::cin, line );
+//         cout << "Cut size: " << graph_pointer->cutArrangement( stringToCut(line) ) << "\n\n";
+//     }  } catch ( std::invalid_argument() ) { }
     
-    delete graph_pointer;
-    cout << "Done\n";
+//     delete graph_pointer;
+//     std::cout << "Done\n";
 
-}
+// }

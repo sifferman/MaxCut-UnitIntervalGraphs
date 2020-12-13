@@ -55,7 +55,7 @@ class Graph {
 
         // maxcut algorithm
         class GraphTooLarge { } ;
-        // u2 BF_maxcut() const ;     // 2^n
+        u2 BF_maxcut() const ;     // 2^n
 
     protected:
         u2 cut() const ;
@@ -71,7 +71,7 @@ class Graph {
 
 class Clique ;
 class MaximalClique ;
-class Sect ;
+class TwinClass ;
 
 
 
@@ -81,23 +81,23 @@ class UnitIntervalGraph : public Graph {
         UnitIntervalGraph( const std::vector<u2> & sizes, const std::vector<u2> & connections );
 
         u2 t() const { return MC.size() ; }
-        u2 k() const { return  S.size() ; }
+        u2 k() const { return TC.size() ; }
         void print() const ;
 
         void makeMaximalCliques() const ;
-        void makeSects() const ;
+        void makeTwinClasses() const ;
         
         class MismatchedParameters { } ;
         class BadConnectionsFormat { } ;
         u2 cutArrangement( const std::vector<u2> & cut ) const;
         u2 ES_maxcut() const ;     // (s+1)^k
-        // u2 EO_maxcut() const ;     // poly INCORRECT
+        u2 EO_maxcut() const ;     // poly INCORRECT
 
     protected:
-        void fill_MC_and_S( const std::vector<u2> & sizes, const std::vector<u2> & connections ) ;
+        void fill_MC_and_TC( const std::vector<u2> & sizes, const std::vector<u2> & connections ) ;
 
         mutable std::vector< std::shared_ptr<MaximalClique> > MC ;
-        mutable std::vector< std::shared_ptr<Sect> > S ;
+        mutable std::vector< std::shared_ptr<TwinClass> > TC ;
 
 
 } ;
@@ -117,19 +117,19 @@ class Clique : public Graph {
 class MaximalClique : public Clique,
 public std::enable_shared_from_this<MaximalClique> {
     public:
-        void addSect( std::shared_ptr<Sect> & ) ;
-        bool contains( std::shared_ptr<Sect> & ) const ;
-        u2 numSects() const { return S.size(); }
+        void addSect( std::shared_ptr<TwinClass> & ) ;
+        bool contains( std::shared_ptr<TwinClass> & ) const ;
+        u2 numTwinClasses() const { return TC.size(); }
     private:
-        std::set< std::shared_ptr<Sect> > S ;
+        std::set< std::shared_ptr<TwinClass> > TC ;
         friend class UnitIntervalGraph ;
-        friend class Sect ;
+        friend class TwinClass ;
         std::shared_ptr<MaximalClique> getThis() { return shared_from_this(); }
 } ;
 
 
-class Sect : public Clique,
-public std::enable_shared_from_this<Sect> {
+class TwinClass : public Clique,
+public std::enable_shared_from_this<TwinClass> {
     public:
         void addToMaximalClique( std::shared_ptr<MaximalClique> & ) ;
         bool isMemberOf( std::shared_ptr<MaximalClique> & ) const ;
@@ -139,7 +139,7 @@ public std::enable_shared_from_this<Sect> {
         std::set< std::shared_ptr<MaximalClique> > MC ;
         friend class UnitIntervalGraph ;
         friend class MaximalClique ;
-        std::shared_ptr<Sect> getThis() { return shared_from_this(); }
+        std::shared_ptr<TwinClass> getThis() { return shared_from_this(); }
 } ;
 
 

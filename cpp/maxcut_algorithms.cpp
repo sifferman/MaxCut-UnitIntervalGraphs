@@ -22,10 +22,10 @@ u2 UnitIntervalGraph::cutArrangement( const vector<u2> & cut ) const {
     if ( cut.size() != k() )
         throw MismatchedParameters();
 
-    for ( u2 s = 0; s < k(); s++ ) {
+    for ( u2 tc = 0; tc < k(); tc++ ) {
         u2 i = 0;
-        for ( auto v : S.at(s)->V )
-            v->side = (vertex::Side)( i < cut.at(s) );
+        for ( auto v : TC.at(tc)->V )
+            v->side = (vertex::Side)( i < cut.at(tc) );
     }
     
     return this->cut();
@@ -39,30 +39,37 @@ u2 UnitIntervalGraph::cutArrangement( const vector<u2> & cut ) const {
 ///////////////////////
 
 // Brute force Max-Cut algorithm. Time complexity: O*( 2^v ).
-// u2 Graph::BF_maxcut() const {
-    // if ( V.size() > 22 ) throw GraphTooLarge() ;
+u2 Graph::BF_maxcut() const {
+    if ( V.size() > 22 ) throw GraphTooLarge() ;
 
-    // u4 max = 0 ;
-    // u2 cut = 0 ;
-    // size_t arrangement = 0 ;
+    u4 max = 0 ;
+    u2 cut = 0 ;
+    size_t arrangement = 0 ;
+
+    u2 v_i;
 
 
-    // // for each vertex arrangement, arrange each vertex then store the cut-value if it is bigger than max
-    // for ( size_t i = 0; i < pow( 2, V.size() ); i++ ) {
-    //     for ( u2 v = 0; v < V.size(); v++ )
-    //         V.at(v)->side = (vertex::Side) (( i >> v ) & 1) ;
-    //     cut = this->cut();
-    //     if ( cut > max ) { max = cut ; arrangement = i ; }
-    // }
+    // for each vertex arrangement, arrange each vertex then store the cut-value if it is bigger than max
+    v_i = 0;
+    for ( size_t i = 0; i < pow( 2, V.size() ); i++ ) {
+        for ( auto v : V ) {
+            v->side = (vertex::Side) (( i >> v_i ) & 1) ;
+            v_i++;
+        }
+        cut = this->cut();
+        if ( cut > max ) { max = cut ; arrangement = i ; }
+    }
 
-    // // revert to maximal arrangement
-    // for ( u2 v = 0; v < V.size(); v++ )
-    //     V.at(v)->side = (vertex::Side) (( arrangement >> v ) & 1) ;
+    // revert to maximal arrangement
+    v_i = 0;
+    for ( auto v : V ) {
+        v->side = (vertex::Side) (( arrangement >> v_i ) & 1) ;
+        v_i++;
+    }
 
-    // // return max
-    // return max;
-// }
-
+    // return max
+    return max;
+}
 
 
 
@@ -75,7 +82,7 @@ void UnitIntervalGraph::makeMaximalCliques() const {
 
 
 // Initialize Sects.
-void UnitIntervalGraph::makeSects() const {
+void UnitIntervalGraph::makeTwinClasses() const {
     makeMaximalCliques() ;
     // for each C[j], remove all verticies in another clique
     // push
@@ -88,12 +95,12 @@ void UnitIntervalGraph::makeSects() const {
 
 // Max-Cut algorithm. Time complexity: O*( (s+1)^k ).
 u2 UnitIntervalGraph::ES_maxcut() const {
-    makeSects() ;
-    const u2 num_sects = S.size() ;
+    makeTwinClasses() ;
+    const u2 num_twinclasses = TC.size() ;
 
     // MAX_ASSIGNMENT is the number of comparisons to make
     size_t MAX_ASSIGNMENT = 1 ;
-    for ( unsigned short s = 0; s < num_sects; s++ ) MAX_ASSIGNMENT *= S.at(s)->n()+1 ;
+    for ( unsigned short tc = 0; tc < num_twinclasses; tc++ ) MAX_ASSIGNMENT *= TC.at(tc)->n()+1 ;
 
     // cout << "Number of Comparisons to Make: " << MAX_ASSIGNMENT << endl ;
 
@@ -102,7 +109,7 @@ u2 UnitIntervalGraph::ES_maxcut() const {
     vector<size_t> solutions ;
     u4 max = 0 ;
     
-    u2 cuts[num_sects] ;
+    u2 cuts[num_twinclasses] ;
 
 
     size_t assignment ;
@@ -110,14 +117,14 @@ u2 UnitIntervalGraph::ES_maxcut() const {
     for ( assignment = 0; assignment < MAX_ASSIGNMENT; assignment++ ) {
         // according to assignment, arrange G into L and R
         size_t each_assignment = assignment ;
-        for ( u2 s = 0; s < num_sects; s++ ) {
-            cuts[s] = each_assignment % (S.at(s)->n()+1) ;
-            each_assignment /= S.at(s)->n()+1 ;
+        for ( u2 tc = 0; tc < num_twinclasses; tc++ ) {
+            cuts[tc] = each_assignment % (TC.at(tc)->n()+1) ;
+            each_assignment /= TC.at(tc)->n()+1 ;
         }
-    for ( u2 s = 0; s < k(); s++ ) {
+    for ( u2 tc = 0; tc < k(); tc++ ) {
         u2 i = 0;
-        for ( auto v : S.at(s)->V )
-            v->side = (vertex::Side)( i < cuts[s] );
+        for ( auto v : TC.at(tc)->V )
+            v->side = (vertex::Side)( i < cuts[tc] );
     }
         
         // cut
@@ -133,23 +140,23 @@ u2 UnitIntervalGraph::ES_maxcut() const {
     }
 
     // according to found best_assignment, arrange G into L and R so that G can be looked at later
-    for ( u2 s = 0; s < num_sects; s++ ) {
-        cuts[s] = best_assignment % (S.at(s)->n()+1) ;
-        best_assignment /= S.at(s)->n()+1 ;
+    for ( u2 tc = 0; tc < num_twinclasses; tc++ ) {
+        cuts[tc] = best_assignment % (TC.at(tc)->n()+1) ;
+        best_assignment /= TC.at(tc)->n()+1 ;
     }
-    for ( u2 s = 0; s < k(); s++ ) {
+    for ( u2 tc = 0; tc < k(); tc++ ) {
         u2 i = 0;
-        for ( auto v : S.at(s)->V )
-            v->side = (vertex::Side)( i < cuts[s] );
+        for ( auto v : TC.at(tc)->V )
+            v->side = (vertex::Side)( i < cuts[tc] );
     }
 
     print() ; cout << endl ;
     cout << "Printing all solutions: \n";
     for ( size_t i = 0 ; i < solutions.size() ; i++ ) {
         size_t each_assignment = solutions.at( i ) ;
-        for ( u2 s = 0; s < num_sects; s++ ) {
-            cout << ( each_assignment % (S.at(s)->n()+1) ) << " " ;
-            each_assignment /= S.at(s)->n()+1 ;
+        for ( u2 tc = 0; tc < num_twinclasses; tc++ ) {
+            cout << ( each_assignment % (TC.at(tc)->n()+1) ) << " " ;
+            each_assignment /= TC.at(tc)->n()+1 ;
         }
         cout << endl ;
     }
@@ -159,11 +166,13 @@ u2 UnitIntervalGraph::ES_maxcut() const {
 }
 
 
-// // INCORRECT Every-Other max cut algorithm for sorted indifference graph
-// // O( v )
-// u2 UnitIntervalGraph::EO_maxcut() const {
-//     for ( u2 v = 0; v < V.size(); v++ )
-//         V.at(v)->side = (vertex::Side) (v%2) ;
-//     return cut();
-// }
-
+// // Every-Other 1/2 Appropriation Algorithm for sorted Unit Interval Graphs
+// O( v )
+u2 UnitIntervalGraph::EO_maxcut() const {
+    u1 A = 0;
+    for ( auto v : V ) {
+        v->side = (vertex::Side) A;
+        A = ~A;
+    }
+    return cut();
+}
