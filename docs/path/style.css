@@ -1,0 +1,29 @@
+
+/* path/style.css */
+
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+body > * {
+    margin: .2em;
+}
+
+.twin-class {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.twin-class > * {
+    margin: .4em;
+    text-align: center;
+}
+
+.slider-div {
+    text-align: center;
+}
+
+.s-input {
+    width: 5ch;
+}

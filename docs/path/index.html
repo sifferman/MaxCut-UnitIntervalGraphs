@@ -1,0 +1,114 @@
+
+<!-- path/index.html -->
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Path Case</title>
+        
+    </head>
+    <body>
+        <h1>Path Unit Interval Graphs</h1>
+
+        <div>
+            <button onclick="randomize()">Randomize</button>
+            <button onclick="solve()">Run Algorithm</button>
+            <button onclick="proposeCounterexample()"> Propose Counterexample </button>
+        </div>
+
+        <div>
+            Cut Value: <span id="Result"> </span>
+        </div>
+
+        <div class="twin-class">
+            <div>
+                Twin Class <span class="twin-class-index">0</span>
+            </div>
+            <div>
+                S:<input type="number" min="0" value="4" class="s-input" onchange="handleSInput(this);">
+            </div>
+            <div class="slider-div">
+                <label>n</label>: <span class="n-display">2</span> <br>
+                <input type="range" min="0" value="2" class="n-slider" oninput="handleNSlider(this);">
+            </div>
+            <canvas class="plot" height="100" width="100"></canvas>
+            <div>
+                <button id="test" class="n-maximize" onclick="handleMaximize(this);">Maximize</button>
+            </div>
+        </div>
+
+        <div class="twin-class">
+            <div>
+                Twin Class <span class="twin-class-index">0</span>
+            </div>
+            <div>
+                S:<input type="number" min="0" value="4" class="s-input" onchange="handleSInput(this);">
+            </div>
+            <div class="slider-div">
+                <label>n</label>: <span class="n-display">2</span> <br>
+                <input type="range" min="0" value="2" class="n-slider" oninput="handleNSlider(this);">
+            </div>
+            <canvas class="plot" height="100" width="100"></canvas>
+            <div>
+                <button id="test" class="n-maximize" onclick="handleMaximize(this);">Maximize</button>
+            </div>
+        </div>
+
+        <div class="twin-class">
+            <div>
+                Twin Class <span class="twin-class-index">0</span>
+            </div>
+            <div>
+                S:<input type="number" min="0" value="4" class="s-input" onchange="handleSInput(this);">
+            </div>
+            <div class="slider-div">
+                <label>n</label>: <span class="n-display">2</span> <br>
+                <input type="range" min="0" value="2" class="n-slider" oninput="handleNSlider(this);">
+            </div>
+            <canvas class="plot" height="100" width="100"></canvas>
+            <div>
+                <button id="test" class="n-maximize" onclick="handleMaximize(this);">Maximize</button>
+            </div>
+        </div>
+
+        <div class="twin-class">
+            <div>
+                Twin Class <span class="twin-class-index">0</span>
+            </div>
+            <div>
+                S:<input type="number" min="0" value="4" class="s-input" onchange="handleSInput(this);">
+            </div>
+            <div class="slider-div">
+                <label>n</label>: <span class="n-display">2</span> <br>
+                <input type="range" min="0" value="2" class="n-slider" oninput="handleNSlider(this);">
+            </div>
+            <canvas class="plot" height="100" width="100"></canvas>
+            <div>
+                <button id="test" class="n-maximize" onclick="handleMaximize(this);">Maximize</button>
+            </div>
+        </div>
+
+        <div class="twin-class">
+            <div>
+                Twin Class <span class="twin-class-index">0</span>
+            </div>
+            <div>
+                S:<input type="number" min="0" value="4" class="s-input" onchange="handleSInput(this);">
+            </div>
+            <div class="slider-div">
+                <label>n</label>: <span class="n-display">2</span> <br>
+                <input type="range" min="0" value="2" class="n-slider" oninput="handleNSlider(this);">
+            </div>
+            <canvas class="plot" height="100" width="100"></canvas>
+            <div>
+                <button id="test" class="n-maximize" onclick="handleMaximize(this);">Maximize</button>
+            </div>
+        </div>
+
+
+        
+
+    </body>
+</html>
+<script src="script.js"> </script>

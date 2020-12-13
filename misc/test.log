@@ -1,0 +1,284 @@
+
+
+
+                        Sect sizes :   6 3 6 3 4 1 1 2
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 2 3 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o           15
+                                     3   o-o-o         12
+                                     4     o-o-o-o     14
+                                     3         o-o-o   6
+                                     3           o-o-o 4
+54 45 102 42 44 16 7 4
+15 3 15 3 6 0 0 1
+69 48 117 45 50 16 7 5
+
+Printing all solutions:
+0 3 6 0 0 1 1 0
+6 0 0 3 4 0 0 2
+Max-cut BF  : 120
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        Sect sizes :   6 3 6
+
+Number of MCs Each Sect Belongs To :   1 2 1
+Number of Sects in Each Mxml Clq :   2 o-o   9
+                                     2   o-o 9
+18 36 18
+15 3 15
+33 39 33
+
+Printing all solutions:
+1 3 1
+2 3 1
+1 3 2
+2 3 2
+4 0 4
+5 0 4
+4 0 5
+5 0 5
+Max-cut BF  : 40
+
+
+
+
+
+                        Sect sizes :   6 3 6 3
+
+Number of MCs Each Sect Belongs To :   1 2 2 1
+Number of Sects in Each Mxml Clq :   2 o-o     9
+                                     2   o-o   9
+                                     2     o-o 9
+18 36 36 18
+15 3 15 3
+33 39 51 21
+
+Printing all solutions:
+4 0 6 0
+5 0 6 0
+1 3 0 3
+2 3 0 3
+Max-cut BF  : 56
+
+
+
+
+
+                        Sect sizes :   6 3 6 3 4
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o     15
+                                     3   o-o-o   12
+                                     3     o-o-o 13
+54 45 96 39 36
+15 3 15 3 6
+69 48 111 42 42
+
+Printing all solutions:
+0 3 6 0 0
+0 3 6 0 1
+6 0 0 3 3
+6 0 0 3 4
+Max-cut BF  : 105
+
+
+
+
+
+                        Sect sizes :   6 3 6 3 4 1
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o       15
+                                     3   o-o-o     12
+                                     3     o-o-o   13
+                                     2         o-o 5
+54 45 96 39 40 4
+15 3 15 3 6 0
+69 48 111 42 46 4
+
+Printing all solutions:
+6 0 0 3 4 0
+0 3 6 0 0 1
+Max-cut BF  : 109
+
+
+
+
+
+                        Sect sizes :   6 3 6 3 4 1 1
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 2 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o         15
+                                     3   o-o-o       12
+                                     3     o-o-o     13
+                                     2         o-o   5
+                                     2           o-o 2
+54 45 96 39 40 5 1
+15 3 15 3 6 0 0
+69 48 111 42 46 5 1
+
+Printing all solutions:
+0 3 6 0 0 1 0
+6 0 0 3 4 0 1
+Max-cut BF  : 110
+
+
+
+
+
+                        Sect sizes :   6 3 6 3 4 1 1 2
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 2 3 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o           15
+                                     3   o-o-o         12
+                                     4     o-o-o-o     14
+                                     3         o-o-o   6
+                                     3           o-o-o 4
+54 45 102 42 44 16 7 4
+15 3 15 3 6 0 0 1
+69 48 117 45 50 16 7 5
+
+Printing all solutions:
+0 3 6 0 0 1 1 0
+6 0 0 3 4 0 0 2
+Max-cut BF  : 120
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        Sect sizes :   15
+
+Number of MCs Each Sect Belongs To :   1
+Number of Sects in Each Mxml Clq :   1 o 15
+0
+105
+105
+
+Printing all solutions:
+7
+8
+Max-cut BF  : 56
+
+
+
+
+
+                        Sect sizes :   6 9 3
+
+Number of MCs Each Sect Belongs To :   1 2 1
+Number of Sects in Each Mxml Clq :   2 o-o   15
+                                     2   o-o 12
+54 81 27
+15 36 3
+69 117 30
+
+Printing all solutions:
+0 9 0 *
+6 0 3
+Max-cut BF  : 81
+
+
+
+
+
+                        Sect sizes :   6 3 6 3 5 
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o     15
+                                     3   o-o-o   12
+                                     3     o-o-o 14
+54 45 102 42 45
+15 3 15 3 10
+69 48 117 45 55
+
+Printing all solutions:
+0 3 6 0 1 *
+6 0 0 3 4
+Max-cut BF  : 112
+
+
+
+
+
+                        Sect sizes :   6 3 6 3 5 1 
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o       15
+                                     3   o-o-o     12
+                                     3     o-o-o   14
+                                     2         o-o 6
+54 45 102 42 50 5
+15 3 15 3 10 0
+69 48 117 45 60 5
+
+Printing all solutions:
+6 0 0 3 4 0
+6 0 0 3 5 0
+0 3 6 0 0 1
+0 3 6 0 1 1 *
+Max-cut BF  : 116
+
+
+
+
+
+                        Sect sizes :   6 3 6 3 4 1 1 2 
+
+Number of MCs Each Sect Belongs To :   1 2 3 2 2 3 2 1
+Number of Sects in Each Mxml Clq :   3 o-o-o           15
+                                     3   o-o-o         12
+                                     4     o-o-o-o     14
+                                     3         o-o-o   6
+                                     3           o-o-o 4
+54 45 102 42 44 16 7 4
+15 3 15 3 6 0 0 1
+69 48 117 45 50 16 7 5
+
+Printing all solutions:
+0 3 6 0 0 1 1 0
+6 0 0 3 4 0 0 2 *
+Max-cut BF  : 120
