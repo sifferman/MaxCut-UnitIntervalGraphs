@@ -1,1 +1,3 @@
-# Max_Cut-Unit_Interval_Graphs
+# MaxCut-UnitIntervalGraphs
+
+Repo: https://github.com/E4tHam/MaxCut-UnitIntervalGraphs/
