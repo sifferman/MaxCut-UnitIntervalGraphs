@@ -78,6 +78,7 @@ u2 Graph::BF_maxcut() const {
 void UnitIntervalGraph::makeMaximalCliques() const {
     // for each V[j], make maximal clique
     // push if it does not already exist
+    cerr << "Assuming that Unit Interval Graph already has its Maximal Cliques stored.\n";
 }
 
 
@@ -86,6 +87,8 @@ void UnitIntervalGraph::makeTwinClasses() const {
     makeMaximalCliques() ;
     // for each C[j], remove all verticies in another clique
     // push
+    cerr << "Assuming that Unit Interval Graph already has its Twin Classes stored.\n";
+
 }
 
 
@@ -94,7 +97,7 @@ void UnitIntervalGraph::makeTwinClasses() const {
 
 
 // Max-Cut algorithm. Time complexity: O*( (s+1)^k ).
-u2 UnitIntervalGraph::ES_maxcut() const {
+u2 UnitIntervalGraph::BF_maxcut() const {
     makeTwinClasses() ;
     const u2 num_twinclasses = TC.size() ;
 
@@ -169,10 +172,104 @@ u2 UnitIntervalGraph::ES_maxcut() const {
 // // Every-Other 1/2 Appropriation Algorithm for sorted Unit Interval Graphs
 // O( v )
 u2 UnitIntervalGraph::EO_maxcut() const {
+
+    print();
+
     u1 A = 0;
     for ( auto v : V ) {
         v->side = (vertex::Side) A;
         A = ~A;
     }
-    return cut();
+
+    cout << "Printing all Solutions:\n (you may round each non-integer up or down)\n";
+    for ( auto tc : TC )
+        cout << (float)tc->n()/2 << " ";
+    cout << endl;
+
+    cout << endl;
+
+    u2 approx = cut();
+    cout << "Max-Cut / 2 <= " << approx << " <= Max-Cut\n";
+
+    return approx;
+}
+
+
+
+
+
+
+
+// void print_solutions( vector<float> arrangement ) {
+//     size_t PERMUTATIONS = 1;
+//     for ( auto tc : arrangement ) {
+//         if ( modf( tc, int() ) == 0.5 )
+//             PERMUTATIONS << 1;
+//     }
+
+//     for ( size_t p = 0; p < PERMUTATIONS; p++ ) {
+//         u2 r_i = 0;
+//         for ( auto tc : arrangement ) {
+//             if ( modf( tc, int() ) == 0.5 ) {
+//                 // cout the permutation
+//                 cout << (( PERMUTATIONS >> r_i ) ? floor( tc ) : ceil( tc )) << " ";
+//                 r_i++;
+//             } else {
+//                 cout << tc << " ";
+//             }
+//         }
+//         cout << "\n";
+//     }
+// }
+
+u2 Path::SI_maxcut() const {
+    vector<float> arrangement;
+
+
+
+    for ( u1 tc = 0; tc < k(); tc++ ) {
+        if        ( tc == 0     ) {
+            arrangement.push_back( min(
+                (float) TC.at(tc)->n(),
+                (( (float) TC.at( tc )->n() + TC.at( tc+1 )->n() ) / 2)
+            ) );
+        } else if ( tc == k()-1 ) {
+            arrangement.push_back( min(
+                (float) TC.at(tc)->n(),
+                (( (float) TC.at( tc-1 )->n() + TC.at( tc )->n() ) / 2)
+            ) );
+        } else {
+            arrangement.push_back( min(
+                (float) TC.at(tc)->n(),
+                (( (float) TC.at( tc-1 )->n() + TC.at( tc )->n() + TC.at( tc+1 )->n() ) / 2)
+            ) );
+        }
+    }
+
+    // print Graph and data
+    print();
+
+
+    // print solutions
+    cout << "Printing all Solutions:\n (you may round each non-integer up or down)\n";
+
+    for ( u2 tc = 0; tc < k(); tc++ )
+        cout << arrangement.at(tc) << " ";
+    cout << endl;
+
+    for ( u2 tc = 0; tc < k(); tc++ )
+        cout << TC.at(tc)->n() - arrangement.at(tc) << " ";
+    cout << endl;
+
+    cout << endl;
+
+    // print cut value
+    vector<u2> cut;
+    for ( u2 tc = 0; tc < k(); tc++ )
+        cut.push_back( floor( arrangement.at(tc) ) );
+    u2 cut_value = cutArrangement( cut );
+
+    cout << "Max-Cut: " << cut_value << endl;
+    
+    return cut_value;
 }

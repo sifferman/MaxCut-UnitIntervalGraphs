@@ -10,30 +10,163 @@
 #include <sstream>
 #include <string>
 
-// #include "clipp/clipp.h"
-// using namespace clipp;
-using std::cout; using std::string;
+#include "_src/clipp/clipp.h"
+using namespace std;
+using namespace clipp;
 
 
-std::vector<u2> stringToCut( const string & in );
-void testMemory() ;
-// void readFile(  const int & argc ) ;
+
+
+vector<u2> stringToVector( const string & in );
 
 int main( int argc, char ** argv ) { srand( time(NULL) );
-    // testMemory() ;
 
-    UnitIntervalGraph().ES_maxcut() ;
-    
-    cout << "done\n";
+    enum Src        { RANDOM, FILE };
+    enum Structure  { BASIC, PATH, STAIRCASE };
+    enum Algorithm  { BF, EO, SI };
+
+    class InvalidCommandLineArgument { };
+
+    Src src = RANDOM;
+    string file_in_path = "";
+    Structure structure = BASIC;
+    Algorithm algorithm = BF;
+    bool FileOut = true;
+    string file_out_path = "out.txt";
+
+    auto cli = (
+        /* put stuff here */
+        option("-r", "--random").set(src, RANDOM)
+            % "Randomize the Unit Interval Graph",
+        option("-fi", "--file-in").set(src, FILE) & value("file_in_path", file_in_path)
+            % "Graph is loaded from file",
+        
+        option("-b", "--basic").set(structure, BASIC)
+            % "No restrictions on structure",
+        option("-p", "--path").set(structure, PATH)
+            % "Path structure",
+        option("-s", "--staircase").set(structure, STAIRCASE)
+            % "Staircase structure",
+
+        option("-bf", "--brute-force").set(algorithm, BF)
+            % "Run brute-force algorithm",
+        option("-eo", "--every-other").set(algorithm, EO)
+            % "Run every-other approx algorithm",
+        option("-si", "--sifferman").set(algorithm, SI)
+            % "Run Sifferman alg (only on path)",
+
+        option("-fo", "--file-out").set(FileOut) & value("file_out_path", file_out_path)
+            % "Print result to file"
+    );
+
+    if( !parse(argc, argv, cli) ) {
+        cout << make_man_page( cli, argv[0] );
+        return -1;
+    }
+
+    UnitIntervalGraph * g;
+
+    // https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
+    std::ofstream ofs;
+    std::streambuf * coutbuf;
+    if ( FileOut ) {
+        ofs.open( file_out_path );
+        coutbuf = std::cout.rdbuf(); //save old buf
+        std::cout.rdbuf(ofs.rdbuf()); //redirect std::cout to out.txt
+    }
+
+    ifstream ifs;
+    string line;
+    vector<u2> sizes;
+    vector<u2> connections;
+    switch ( src ) {
+        case RANDOM:
+            switch ( structure ) {
+                case BASIC:
+                    g = new UnitIntervalGraph();
+                    break;
+                case PATH:
+                    g = new Path();
+                    break;
+                case STAIRCASE:
+                    g = new Staircase();
+                    break;
+                default:
+                    throw InvalidCommandLineArgument();
+                    break;
+            } break;
+            
+        case FILE:
+            ifs.open( file_in_path );
+
+            getline( ifs, line );
+            sizes = stringToVector( line );
+            getline( ifs, line );
+            connections = stringToVector( line );
+
+            ifs.close();
+
+            switch ( structure ) {
+                case BASIC:
+                    g = new UnitIntervalGraph( sizes, connections );
+                    break;
+                case PATH:
+                    g = new Path( sizes, connections );
+                    break;
+                case STAIRCASE:
+                    g = new Staircase( sizes, connections );
+                    break;
+                default:
+                    throw InvalidCommandLineArgument();
+                    break;
+            } break;
+
+        default:
+            throw InvalidCommandLineArgument();
+            break;
+    }
+
+
+    switch ( algorithm ) {
+        case BF:
+            g->BF_maxcut();
+            break;
+        case EO:
+            g->EO_maxcut();
+            break;
+        case SI:
+            g->SI_maxcut();
+            break;
+        default:
+            throw InvalidCommandLineArgument();
+            break;
+    }
+
+
+
+    // https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
+    if ( FileOut ) {
+        ofs.close();
+        std::cout.rdbuf(coutbuf); //reset to standard output again
+
+        ifs.open( file_out_path );
+        while( getline( ifs, line ) ) 
+            cout << line << '\n';
+        ifs.close();
+    }
+
     return 0 ;
 }
 
-std::vector<u2> stringToCut( const string & in ) {
 
-    std::vector<u2> out ;
+
+
+vector<u2> stringToVector( const string & in ) {
+
+    vector<u2> out ;
     string next;
 
-    std::istringstream iss(in);
+    istringstream iss(in);
 
     for( string next ; iss >> next ; ) {
         out.push_back( stoi( next ) );
@@ -41,47 +174,3 @@ std::vector<u2> stringToCut( const string & in ) {
     
     return out;
 }
-
-void testMemory() {
-    for ( ; true ; )
-        UnitIntervalGraph g;
-}
-
-// void readFile(  const int & argc ) {
-//     string line;
-//     UnitIntervalGraph * graph_pointer;
-
-    
-
-//     if ( argc == 1 ) {
-//         std::ifstream ifs( "graph.txt" );
-
-//         std::getline( ifs, line );
-//         std::vector<u2> sizes = stringToCut( line );
-//         std::getline( ifs, line );
-//         std::vector<u2> connections = stringToCut( line );
-
-//         graph_pointer = new UnitIntervalGraph( sizes, connections );
-//     }
-//     else if ( argc == 2 ) {
-//         graph_pointer = new UnitIntervalGraph();
-//     }
-//     else {
-//         throw BadCommandParameters() ;      
-//     }
-
-
-
-//     graph_pointer->ES_maxcut();
-
-//     cout << "Enter cut arrangment: (" << graph_pointer->k() << ")\n\n";
-
-//     try {  while (true) {
-//         std::getline( std::cin, line );
-//         cout << "Cut size: " << graph_pointer->cutArrangement( stringToCut(line) ) << "\n\n";
-//     }  } catch ( std::invalid_argument() ) { }
-    
-//     delete graph_pointer;
-//     std::cout << "Done\n";
-
-// }

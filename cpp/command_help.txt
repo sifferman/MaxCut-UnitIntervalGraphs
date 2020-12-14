@@ -1,0 +1,15 @@
+
+help                            Gives this page
+
+-r         --random             Graph is randomized
+-fi <path> --file-in <path>     Graph is loaded from file
+
+-b         --basic              No restrictions on structure
+-p         --path               Path structure
+-s         --staircase          Staircase structure
+
+-bf	       --brute-force        Run brute-force algorithm
+-eo        --every-other        Run every-other approx algorithm
+-si        --sifferman          Run Sifferman alg (only on path)
+
+-fo <path> --file-out <path>    Print result to file

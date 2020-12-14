@@ -58,6 +58,7 @@ class Graph {
         u2 BF_maxcut() const ;     // 2^n
 
     protected:
+        class WrongStructure { };
         u2 cut() const ;
         void updateEdges() ;
         std::set< std::shared_ptr<vertex> > V ;
@@ -90,20 +91,34 @@ class UnitIntervalGraph : public Graph {
         class MismatchedParameters { } ;
         class BadConnectionsFormat { } ;
         u2 cutArrangement( const std::vector<u2> & cut ) const;
-        u2 ES_maxcut() const ;     // (s+1)^k
+        u2 BF_maxcut() const ;     // (s+1)^k
         u2 EO_maxcut() const ;     // poly INCORRECT
+        u2 SI_maxcut() const { throw WrongStructure(); }
+
 
     protected:
+        class _noParams_ { };
+        UnitIntervalGraph( _noParams_ ) { }
+
         void fill_MC_and_TC( const std::vector<u2> & sizes, const std::vector<u2> & connections ) ;
 
         mutable std::vector< std::shared_ptr<MaximalClique> > MC ;
         mutable std::vector< std::shared_ptr<TwinClass> > TC ;
 
-
 } ;
 
+class Path : public UnitIntervalGraph {
+    public:
+        Path();
+        Path( const std::vector<u2> & sizes, const std::vector<u2> & connections );
+        u2 SI_maxcut() const ;
+};
 
-
+class Staircase : public UnitIntervalGraph {
+    public:
+        Staircase();
+        Staircase( const std::vector<u2> & sizes, const std::vector<u2> & connections );
+};
 
 
 

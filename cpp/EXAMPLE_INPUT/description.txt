@@ -1,0 +1,2 @@
+Twin Class Sizes separated with a ' '
+The number of Maximal Clqiues each Twin Class belongs to separated with a ' '

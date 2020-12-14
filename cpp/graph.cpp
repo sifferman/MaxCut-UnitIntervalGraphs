@@ -116,7 +116,7 @@ void Graph::updateEdges() {
 ///////////////////////
 
 UnitIntervalGraph::UnitIntervalGraph() {
-    if ( MC.size() != 0 ) return ;
+
     vector<u2> sizes , connections ;
 
     u2 k = 3 + (rand() % 7) ;
@@ -163,17 +163,16 @@ UnitIntervalGraph::UnitIntervalGraph( const vector<u2> & sizes, const vector<u2>
 
 void UnitIntervalGraph::fill_MC_and_TC( const vector<u2> & sizes, const vector<u2> & connections ) {
 
+    if ( MC.size() != 0 || TC.size() != 0 ) return ;
+
+
     if ( sizes.size() != connections.size() ) throw MismatchedParameters() ;
     if ( sizes.size() == 0 ) return ;
 
     if (   ( connections.at(0)  != 1 )
         || ( connections.back() != 1 )
     ) throw BadConnectionsFormat() ;
-
-    // for ( u2 s = 0; s < S.size(); s++ ) delete S.at(s);
-    // for ( u2 mc = 0; mc < MC.size(); mc++ ) delete MC.at(mc);
-    // MC.clear();
-    // S.clear();
+    
 
     // add the inputed number of sects
     for ( u2 tc = 0 ; tc < sizes.size() ; tc++ ) {
@@ -248,7 +247,7 @@ void UnitIntervalGraph::print() const {
     string next_line = line( 0 , MC.at(0)->TC.size() ) ;
     while ( next_line.length() < 2*TC.size()+2 ) next_line += " " ;
 
-    cout << "       Number of Sects in Each Mxml Clq :   "
+    cout << "       Number of Sects in Each Mxml Clq : "
          << next_line << MC.at(0)->n() 
          << endl ;
     for ( u2 mc = 1, tc = 0 ; mc < MC.size() ; mc++ ) {
@@ -257,23 +256,23 @@ void UnitIntervalGraph::print() const {
         next_line = line( tc, MC.at(mc)->TC.size() ) ;
         while ( next_line.length() < 2*TC.size()+2 ) next_line += " " ;
 
-        cout << "                                     "
+        cout << "                                          "
              << next_line << MC.at(mc)->n() 
              << endl ;        
     }
-    for ( u4 i = 0 ; i < k() ; i++ )
-        cout << 
-        TC.at(i)->n() * ( TC.at(i)->numBranches() - TC.at(i)->n() + 1 )
-        << " " ; cout << endl ;
-    for ( u4 i = 0 ; i < k() ; i++ )
-        cout << 
-        ( TC.at(i)->n() * ( TC.at(i)->n() - 1) ) / 2
-        << " " ; cout << endl ;
-    for ( u4 i = 0 ; i < k() ; i++ )
-        cout << 
-        ( TC.at(i)->n() * ( TC.at(i)->numBranches() - TC.at(i)->n() + 1 ) ) +
-        ( ( TC.at(i)->n() * ( TC.at(i)->n() - 1) ) / 2 )
-        << " " ; cout << endl ;
+    // for ( u4 i = 0 ; i < k() ; i++ )
+    //     cout << 
+    //     TC.at(i)->n() * ( TC.at(i)->numBranches() - TC.at(i)->n() + 1 )
+    //     << " " ; cout << endl ;
+    // for ( u4 i = 0 ; i < k() ; i++ )
+    //     cout << 
+    //     ( TC.at(i)->n() * ( TC.at(i)->n() - 1) ) / 2
+    //     << " " ; cout << endl ;
+    // for ( u4 i = 0 ; i < k() ; i++ )
+    //     cout << 
+    //     ( TC.at(i)->n() * ( TC.at(i)->numBranches() - TC.at(i)->n() + 1 ) ) +
+    //     ( ( TC.at(i)->n() * ( TC.at(i)->n() - 1) ) / 2 )
+    //     << " " ; cout << endl ;
 }
 
 string line( const u2 & s , const u2 & mc_size ) {
@@ -287,6 +286,76 @@ string line( const u2 & s , const u2 & mc_size ) {
 
 
 
+
+
+
+//  Path  //
+
+Path::Path()
+    : UnitIntervalGraph( _noParams_() ) {
+
+    vector<u2> sizes , connections ;
+
+    u2 k = 3 + (rand() % 7) ;
+
+    while ( sizes.size() < k )
+        sizes.push_back( 1 + (rand() % 7) ) ;
+
+    if ( k == 0 || k == 2 ) throw BadConnectionsFormat() ;
+    if ( k >= 1 ) connections.push_back(1) ;
+    if ( k >= 2) connections.push_back(1) ;
+    while ( connections.size() < k )
+        connections.insert( connections.begin()+1, 2 ) ;
+
+    fill_MC_and_TC( sizes, connections );
+
+}
+Path::Path( const std::vector<u2> & sizes, const std::vector<u2> & connections )
+    : UnitIntervalGraph( _noParams_() ) {
+
+    // double check that it is a path
+    if (   connections.size()   == 0
+        || connections.front()  != 1
+        || connections.back()   != 1 )
+        throw BadConnectionsFormat();
+    for ( u1 i = 1; i < connections.size()-1; i++ )
+        if ( connections.at(i) != 2 )
+            throw BadConnectionsFormat();
+
+    fill_MC_and_TC( sizes, connections );
+}
+
+
+// Staircase //
+
+Staircase::Staircase()
+    : UnitIntervalGraph( _noParams_() ) {
+
+    vector<u2> sizes , connections ;
+
+    u2 k = 3 + 2*(rand() % 5) ;
+
+    while ( sizes.size() < k )
+        sizes.push_back( 1 + (rand() % 7) ) ;
+
+    if ( k == 0 || k == 2 ) throw BadConnectionsFormat() ;
+
+    while ( connections.size() < k ) {
+        connections.push_back( min(
+            connections.size()+1    ,
+            k - connections.size()
+        ) ) ;
+    }
+
+    fill_MC_and_TC( sizes, connections );
+
+}
+Staircase::Staircase( const std::vector<u2> & sizes, const std::vector<u2> & connections )
+    : UnitIntervalGraph( sizes, connections ) {
+
+    cerr << "[WARNING]: Assuming that input is a staircase. No check was completed.\n";
+
+}
 
 
 
@@ -366,9 +435,9 @@ bool MaximalClique::contains( std::shared_ptr<TwinClass> & tc ) const {
 
 
 
-//////////
-// SECT //
-//////////
+///////////////
+// TWINCLASS //
+///////////////
 
 // O( S::n )
 void TwinClass::addToMaximalClique( std::shared_ptr<MaximalClique> & mc ) {
