@@ -68,7 +68,10 @@ void vertex::print() const {
 
 // O( n )
 bool Graph::hasVertex( const std::shared_ptr<vertex> & check ) const {
-    return ( V.find(check) != V.end() ) ;
+    for ( auto v : V )
+        if ( v == check )
+            return true;
+    return false;
 }
 
 
@@ -183,7 +186,7 @@ void UnitIntervalGraph::fill_MC_and_TC( const vector<u2> & sizes, const vector<u
             
             // add vertex
             auto next_vertex = make_shared<vertex>();
-            V.insert( next_vertex ) ;
+            V.push_back( next_vertex ) ;
 
             // add it to sect and set its branches
             TC.at(tc)->addVertex( next_vertex ) ;
@@ -388,7 +391,7 @@ void Clique::addVertex( shared_ptr<vertex> & next ) {
         E.push_back( new_edge ) ;
     }
     // add vertex to V
-    V.insert( next ) ;
+    V.push_back( next ) ;
  
 
 }

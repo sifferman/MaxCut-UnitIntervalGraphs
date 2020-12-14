@@ -55,13 +55,17 @@ class Graph {
 
         // maxcut algorithm
         class GraphTooLarge { } ;
-        u2 BF_maxcut() const ;     // 2^n
+        virtual u2 BF_maxcut() const ;     // 2^n
+        virtual u2 EO_maxcut() const { throw WrongStructure(); }
+        virtual u2 SI_maxcut() const { throw WrongStructure(); }
+
+
 
     protected:
         class WrongStructure { };
         u2 cut() const ;
         void updateEdges() ;
-        std::set< std::shared_ptr<vertex> > V ;
+        std::vector< std::shared_ptr<vertex> > V ;
         std::vector< std::shared_ptr<edge> > E ;
         
 };
@@ -93,7 +97,6 @@ class UnitIntervalGraph : public Graph {
         u2 cutArrangement( const std::vector<u2> & cut ) const;
         u2 BF_maxcut() const ;     // (s+1)^k
         u2 EO_maxcut() const ;     // poly INCORRECT
-        u2 SI_maxcut() const { throw WrongStructure(); }
 
 
     protected:
@@ -111,6 +114,7 @@ class Path : public UnitIntervalGraph {
     public:
         Path();
         Path( const std::vector<u2> & sizes, const std::vector<u2> & connections );
+        
         u2 SI_maxcut() const ;
 };
 

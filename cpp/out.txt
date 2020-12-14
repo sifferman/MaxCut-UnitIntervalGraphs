@@ -1,2 +1,0 @@
-sect size: 5 5 6 3 4 
-connects : 1 2 2 2 1 

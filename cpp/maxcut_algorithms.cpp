@@ -26,6 +26,7 @@ u2 UnitIntervalGraph::cutArrangement( const vector<u2> & cut ) const {
         u2 i = 0;
         for ( auto v : TC.at(tc)->V )
             v->side = (vertex::Side)( i < cut.at(tc) );
+        i++;
     }
     
     return this->cut();
@@ -41,6 +42,10 @@ u2 UnitIntervalGraph::cutArrangement( const vector<u2> & cut ) const {
 // Brute force Max-Cut algorithm. Time complexity: O*( 2^v ).
 u2 Graph::BF_maxcut() const {
     if ( V.size() > 22 ) throw GraphTooLarge() ;
+
+    cout << "#####################\n"
+         << "# Graph Brute Force #\n"
+         << "#####################\n\n";
 
     u4 max = 0 ;
     u2 cut = 0 ;
@@ -68,6 +73,7 @@ u2 Graph::BF_maxcut() const {
     }
 
     // return max
+    cout << "Max-Cut: " << max << endl;
     return max;
 }
 
@@ -98,16 +104,22 @@ void UnitIntervalGraph::makeTwinClasses() const {
 
 // Max-Cut algorithm. Time complexity: O*( (s+1)^k ).
 u2 UnitIntervalGraph::BF_maxcut() const {
+
+    cout << "#############################\n"
+         << "# Unit Interval Brute Force #\n"
+         << "#############################\n\n";
+
+
     makeTwinClasses() ;
     const u2 num_twinclasses = TC.size() ;
 
     // MAX_ASSIGNMENT is the number of comparisons to make
     size_t MAX_ASSIGNMENT = 1 ;
-    for ( unsigned short tc = 0; tc < num_twinclasses; tc++ ) MAX_ASSIGNMENT *= TC.at(tc)->n()+1 ;
+    for ( u2 tc = 0; tc < num_twinclasses; tc++ ) MAX_ASSIGNMENT *= TC.at(tc)->n()+1 ;
 
     // cout << "Number of Comparisons to Make: " << MAX_ASSIGNMENT << endl ;
 
-    if ( MAX_ASSIGNMENT >= pow(2,22) ) throw GraphTooLarge() ;
+    if ( MAX_ASSIGNMENT >= ( (unsigned long long) 1 << 22 ) ) throw GraphTooLarge() ;
 
     vector<size_t> solutions ;
     u4 max = 0 ;
@@ -124,19 +136,23 @@ u2 UnitIntervalGraph::BF_maxcut() const {
             cuts[tc] = each_assignment % (TC.at(tc)->n()+1) ;
             each_assignment /= TC.at(tc)->n()+1 ;
         }
-    for ( u2 tc = 0; tc < k(); tc++ ) {
-        u2 i = 0;
-        for ( auto v : TC.at(tc)->V )
-            v->side = (vertex::Side)( i < cuts[tc] );
-    }
+        for ( u2 tc = 0; tc < k(); tc++ ) {
+            u2 i = 0;
+            for ( auto v : TC.at(tc)->V )
+                v->side = (vertex::Side)( i < cuts[tc] );
+            i++;
+        }
         
         // cut
         u2 cut = this->cut();
         // save the result if it is equal
-        if ( cut == max ) { solutions.push_back( assignment ) ; }
+        if ( cut == max ) { solutions.push_back( assignment ); }
         // replace the result if it is greater
-        if ( cut  > max ) {
-            max = cut ; best_assignment = assignment ;
+        if ( cut > max ) {
+            cout << " replacing " << max << " with " << cut << endl;
+            max = cut;
+            best_assignment = assignment;
+
             solutions.clear() ;
             solutions.push_back( assignment ) ;
         }
@@ -151,9 +167,9 @@ u2 UnitIntervalGraph::BF_maxcut() const {
         u2 i = 0;
         for ( auto v : TC.at(tc)->V )
             v->side = (vertex::Side)( i < cuts[tc] );
+        i++;
     }
 
-    print() ; cout << endl ;
     cout << "Printing all solutions: \n";
     for ( size_t i = 0 ; i < solutions.size() ; i++ ) {
         size_t each_assignment = solutions.at( i ) ;
@@ -163,7 +179,8 @@ u2 UnitIntervalGraph::BF_maxcut() const {
         }
         cout << endl ;
     }
-    cout << endl << max << "\n\n";
+    cout << "Max-Cut: " << max << endl;
+
     
     return max;
 }
@@ -173,7 +190,10 @@ u2 UnitIntervalGraph::BF_maxcut() const {
 // O( v )
 u2 UnitIntervalGraph::EO_maxcut() const {
 
-    print();
+    cout << "#############################\n"
+         << "# Every-Other Approximation #\n"
+         << "#############################\n\n";
+
 
     u1 A = 0;
     for ( auto v : V ) {
@@ -190,7 +210,6 @@ u2 UnitIntervalGraph::EO_maxcut() const {
 
     u2 approx = cut();
     cout << "Max-Cut / 2 <= " << approx << " <= Max-Cut\n";
-
     return approx;
 }
 
@@ -225,6 +244,10 @@ u2 UnitIntervalGraph::EO_maxcut() const {
 u2 Path::SI_maxcut() const {
     vector<float> arrangement;
 
+    cout << "##################\n"
+         << "# Sifferman Path #\n"
+         << "##################\n\n";
+
 
 
     for ( u1 tc = 0; tc < k(); tc++ ) {
@@ -246,9 +269,10 @@ u2 Path::SI_maxcut() const {
         }
     }
 
-    // print Graph and data
-    print();
-
+    // invert
+    for ( u2 tc = 0; tc < k(); tc += 2 )
+        arrangement.at(tc) = TC.at(tc)->n() - arrangement.at(tc);
+    
 
     // print solutions
     cout << "Printing all Solutions:\n (you may round each non-integer up or down)\n";
