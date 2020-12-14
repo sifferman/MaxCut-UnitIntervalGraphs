@@ -126,17 +126,12 @@ UnitIntervalGraph::UnitIntervalGraph() {
 
     while ( sizes.size() < k )
         sizes.push_back( 1 + (rand() % 7) ) ;
-
-    // if ( k == 0 ) throw BadConnectionsFormat() ;
-    // if ( k >= 1 ) connections.push_back(1) ;
-    // if ( k >= 2) connections.push_back(1) ;
-    // while ( connections.size() < k )
-    //     connections.insert( connections.begin()+1, 2 ) ;
+    
 
     switch ( k ) {
         case (0) : throw BadConnectionsFormat() ;
         case (3) : connections.push_back(2) ;
-        case (2) : connections.insert(connections.begin(),1) ;
+        case (2) : connections.insert( connections.begin(), 1 ) ;
         default  : connections.push_back(1) ; break ;
     } while ( connections.size() < k ) { // case k > 3
         if      (   connections.size() == 0
@@ -177,12 +172,12 @@ void UnitIntervalGraph::fill_MC_and_TC( const vector<u2> & sizes, const vector<u
     ) throw BadConnectionsFormat() ;
     
 
-    // add the inputed number of sects
+    // add the inputed number of twin classes
     for ( u2 tc = 0 ; tc < sizes.size() ; tc++ ) {
         TC.push_back( make_shared<TwinClass>() );
 
-        // while the new sect's size is less than the inputed size
-        while ( TC.at(tc)->V.size() < sizes.at(tc) ) {
+        // while the new twin class' size is less than the inputed size
+        while ( TC.at(tc)->n() < sizes.at(tc) ) {
             
             // add vertex
             auto next_vertex = make_shared<vertex>();

@@ -18,17 +18,17 @@ u2 Graph::cut() const {
 }
 
 u2 UnitIntervalGraph::cutArrangement( const vector<u2> & cut ) const {
-    
+
     if ( cut.size() != k() )
         throw MismatchedParameters();
 
-    for ( u2 tc = 0; tc < k(); tc++ ) {
-        u2 i = 0;
-        for ( auto v : TC.at(tc)->V )
-            v->side = (vertex::Side)( i < cut.at(tc) );
-        i++;
+    for ( u2 tc = 0 ; tc < k() ; tc++ ) {
+        for ( u2 v = 0 ; v < TC.at(tc)->n() ; v++ ) {
+            TC.at(tc)->V.at(v)->side = (vertex::Side)( v < cut.at(tc) );
+        }
     }
-    
+
+
     return this->cut();
 }
 
@@ -55,22 +55,16 @@ u2 Graph::BF_maxcut() const {
 
 
     // for each vertex arrangement, arrange each vertex then store the cut-value if it is bigger than max
-    v_i = 0;
     for ( size_t i = 0; i < pow( 2, V.size() ); i++ ) {
-        for ( auto v : V ) {
-            v->side = (vertex::Side) (( i >> v_i ) & 1) ;
-            v_i++;
-        }
+        for ( u2 v = 0; v < V.size(); v++ )
+            V.at(v)->side = (vertex::Side) (( i >> v ) & 1) ;
         cut = this->cut();
         if ( cut > max ) { max = cut ; arrangement = i ; }
     }
 
     // revert to maximal arrangement
-    v_i = 0;
-    for ( auto v : V ) {
-        v->side = (vertex::Side) (( arrangement >> v_i ) & 1) ;
-        v_i++;
-    }
+    for ( u2 v = 0; v < V.size(); v++ )
+        V.at(v)->side = (vertex::Side) (( arrangement >> v ) & 1) ;
 
     // return max
     cout << "Max-Cut: " << max << endl;
@@ -119,11 +113,11 @@ u2 UnitIntervalGraph::BF_maxcut() const {
 
     // cout << "Number of Comparisons to Make: " << MAX_ASSIGNMENT << endl ;
 
-    if ( MAX_ASSIGNMENT >= ( (unsigned long long) 1 << 22 ) ) throw GraphTooLarge() ;
+    if ( MAX_ASSIGNMENT >= ( pow(2,22) ) ) throw GraphTooLarge() ;
 
     vector<size_t> solutions ;
     u4 max = 0 ;
-    
+
     u2 cuts[num_twinclasses] ;
 
 
@@ -136,23 +130,20 @@ u2 UnitIntervalGraph::BF_maxcut() const {
             cuts[tc] = each_assignment % (TC.at(tc)->n()+1) ;
             each_assignment /= TC.at(tc)->n()+1 ;
         }
-        for ( u2 tc = 0; tc < k(); tc++ ) {
-            u2 i = 0;
-            for ( auto v : TC.at(tc)->V )
-                v->side = (vertex::Side)( i < cuts[tc] );
-            i++;
-        }
-        
+        for ( u2 tc = 0; tc < num_twinclasses; tc++ )
+            for ( u2 v = 0; v < TC.at(tc)->n(); v++ )
+                TC.at(tc)->V.at(v)->side = (vertex::Side)( v < cuts[tc] ) ;
+
         // cut
         u2 cut = this->cut();
         // save the result if it is equal
         if ( cut == max ) { solutions.push_back( assignment ); }
         // replace the result if it is greater
         if ( cut > max ) {
-            cout << " replacing " << max << " with " << cut << endl;
+            // cout << " replacing " << max << " with " << cut << endl;
+
             max = cut;
             best_assignment = assignment;
-
             solutions.clear() ;
             solutions.push_back( assignment ) ;
         }
@@ -163,12 +154,9 @@ u2 UnitIntervalGraph::BF_maxcut() const {
         cuts[tc] = best_assignment % (TC.at(tc)->n()+1) ;
         best_assignment /= TC.at(tc)->n()+1 ;
     }
-    for ( u2 tc = 0; tc < k(); tc++ ) {
-        u2 i = 0;
-        for ( auto v : TC.at(tc)->V )
-            v->side = (vertex::Side)( i < cuts[tc] );
-        i++;
-    }
+    for ( u2 tc = 0; tc < num_twinclasses; tc++ )
+        for ( u2 v = 0; v < TC.at(tc)->n(); v++ )
+            TC.at(tc)->V.at(v)->side = (vertex::Side)( v < cuts[tc] ) ;
 
     cout << "Printing all solutions: \n";
     for ( size_t i = 0 ; i < solutions.size() ; i++ ) {
@@ -181,7 +169,7 @@ u2 UnitIntervalGraph::BF_maxcut() const {
     }
     cout << "Max-Cut: " << max << endl;
 
-    
+
     return max;
 }
 
@@ -219,28 +207,8 @@ u2 UnitIntervalGraph::EO_maxcut() const {
 
 
 
-// void print_solutions( vector<float> arrangement ) {
-//     size_t PERMUTATIONS = 1;
-//     for ( auto tc : arrangement ) {
-//         if ( modf( tc, int() ) == 0.5 )
-//             PERMUTATIONS << 1;
-//     }
 
-//     for ( size_t p = 0; p < PERMUTATIONS; p++ ) {
-//         u2 r_i = 0;
-//         for ( auto tc : arrangement ) {
-//             if ( modf( tc, int() ) == 0.5 ) {
-//                 // cout the permutation
-//                 cout << (( PERMUTATIONS >> r_i ) ? floor( tc ) : ceil( tc )) << " ";
-//                 r_i++;
-//             } else {
-//                 cout << tc << " ";
-//             }
-//         }
-//         cout << "\n";
-//     }
-// }
-
+// Sifferman Algorithm on Path Case (unproven) O(n)
 u2 Path::SI_maxcut() const {
     vector<float> arrangement;
 
@@ -272,7 +240,7 @@ u2 Path::SI_maxcut() const {
     // invert
     for ( u2 tc = 0; tc < k(); tc += 2 )
         arrangement.at(tc) = TC.at(tc)->n() - arrangement.at(tc);
-    
+
 
     // print solutions
     cout << "Printing all Solutions:\n (you may round each non-integer up or down)\n";
@@ -294,6 +262,6 @@ u2 Path::SI_maxcut() const {
     u2 cut_value = cutArrangement( cut );
 
     cout << "Max-Cut: " << cut_value << endl;
-    
+
     return cut_value;
 }
