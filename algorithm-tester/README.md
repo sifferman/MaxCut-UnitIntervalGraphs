@@ -8,7 +8,7 @@ The intention is to prodce an app that allows for rapid testing of algorithm ide
 
 ## Getting Started
 
-Simply run `make` to compile, and a "maxcut.exe" file will be created. Run this with `./maxcut.exe <PARAMS>`.
+Run `make` to compile, and a "maxcut.exe" file will be created. Run this with `./maxcut.exe <PARAMS>`.
 
 ## Command Parameters
 
@@ -60,4 +60,8 @@ You can find all flags with `./maxcut.exe --help`. This will display:
 
 ## Libraries
 
-This app uses [clipp](https://github.com/muellan/clipp).
+Libraries used:
+
+ * [clipp](https://github.com/muellan/clipp)
+
+
