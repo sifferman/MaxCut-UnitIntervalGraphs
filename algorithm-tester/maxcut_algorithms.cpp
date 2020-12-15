@@ -78,7 +78,7 @@ u2 Graph::BF_maxcut() const {
 void UnitIntervalGraph::makeMaximalCliques() const {
     // for each V[j], make maximal clique
     // push if it does not already exist
-    cerr << "Assuming that Unit Interval Graph already has its Maximal Cliques stored.\n";
+    cerr << "[WARNING]: Assuming that Unit Interval Graph already has its Maximal Cliques stored.\n";
 }
 
 
@@ -87,7 +87,7 @@ void UnitIntervalGraph::makeTwinClasses() const {
     makeMaximalCliques() ;
     // for each C[j], remove all verticies in another clique
     // push
-    cerr << "Assuming that Unit Interval Graph already has its Twin Classes stored.\n";
+    cerr << "[WARNING]: Assuming that Unit Interval Graph already has its Twin Classes stored.\n";
 
 }
 
