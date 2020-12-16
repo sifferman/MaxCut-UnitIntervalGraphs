@@ -8,13 +8,13 @@ The intention is to prodce an app that allows for rapid testing of algorithm ide
 
 ## Getting Started
 
-Run `make` to compile, and a "maxcut.exe" file will be created. Run this with `./maxcut.exe <PARAMS>`.
+Run `make` to compile, and a "maxcut.exe" file will be created. Run this with `./maxcut <PARAMS>`.
 
 ## Command Parameters
 
-You can find all flags with `./maxcut.exe --help`. This will display:
+You can find all flags with `./maxcut --help`. This will display:
 
-> ./maxcut.exe --help
+> ./maxcut --help
 >
 >         Graph Source
 >             -r, --random
