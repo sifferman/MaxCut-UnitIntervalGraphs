@@ -1,2 +1,3 @@
 Twin Class Sizes separated with a ' '
 The number of Maximal Clqiues each Twin Class belongs to separated with a ' '
+The number of verticies in each twin class in partition A.

@@ -31,22 +31,31 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
 
     Structure structure = BASIC;
 
-    bool BF = true;
-    bool EO = false;
-    bool SI = false;
+    bool FC = false ; // file cut
+
+    bool BF = false ; // brute force
+    bool EO = false ; // every other
+    bool SI = false ; // sifferman
 
     bool FileOut = true;
     string file_out_path = "out.txt";
 
-    auto cli = ( (
+    auto cli = (
+        "Graph Source" % (
             option("-r", "--random").set(src, RANDOM)
                 % "Randomize the Unit Interval Graph"
             |
-            option("-fi", "--file-in").set(src, FILE) & value("file_in_path", file_in_path)
+            (option("-fi", "--file-in").set(src, FILE) & value("Input file path", file_in_path))
                 % "Graph is loaded from file"
-        ) % "Graph Source",
+        ),
 
-        (
+        // "File Cut" % (
+        "Cut according to file input" % (
+            option("-fc","--file-cut").set(FC)
+                // % "Cut according to file input"
+        ),
+
+        "Graph Structure" % (
             option("-b", "--basic").set(structure, BASIC)
                 % "No restrictions on structure"
             |
@@ -55,9 +64,9 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
             |
             option("-s", "--staircase").set(structure, STAIRCASE)
                 % "Staircase structure"
-        ) % "Graph Structure",
+        ),
 
-        (
+        "Max-Cut Algorithm" % (
             option("-bf", "--brute-force").set(BF)
                 % "Run brute-force algorithm",
 
@@ -66,12 +75,13 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
 
             option("-si", "--sifferman").set(SI)
                 % "Run Sifferman alg (only on path)"
-        ) % "Max-Cut Algorithm",
+        ),
 
-        (
-            option("-fo", "--file-out").set(FileOut) & value("Output file path", file_out_path)
-                % "Change the path of the output file"
-        ) % "File Out Path"
+        // "File Out Path" % (
+        "Change the path of the output file" % (
+            (option("-fo", "--file-out").set(FileOut) & value("Output file path", file_out_path))
+                // % "Change the path of the output file"
+        )
 
     );
 
@@ -79,14 +89,8 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
         cout << make_man_page( cli, argv[0] );
         return -1;
     }
+    
 
-    // cout << "src: " << src << endl;
-    // cout << "file_in_path: " << file_in_path << endl;
-    // cout << "structure: " << structure << endl;
-    // cout << "FileOut: " << FileOut << endl;
-    // cout << "file_out_path: " << file_out_path << endl;
-
-    // return 0;
 
     UnitIntervalGraph * g;
 
@@ -155,11 +159,37 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
     g->print();
     cout << "\n\n\n";
 
+    if ( FC ) {
+        if ( src == FILE ) {
+            ifs.open( file_in_path );
+            getline( ifs, line );
+            getline( ifs, line );
+            getline( ifs, line );
+            ifs.close();
+            vector<u2> arrangement = stringToVector( line );
+            try {
+                cout << "Cut Arrangement: ";
+                for ( auto tc : arrangement )
+                    cout << tc << " ";
+                cout << "\n";
+                cerr << "I'm here!\n";
+                u2 fileCut = g->cutArrangement( arrangement );
+                cout << "Cut Size according to Input: " << fileCut << "\n";
+            } catch ( UnitIntervalGraph::MismatchedParameters e ) {
+                cout << "Cut not formatted correctly.\n";
+            }
+        }
+        else {
+            cout << "File input not given.\n";
+        }
+        cout << "\n\n\n";
+    }
+
     if ( BF ) {
         try {
             g->BF_maxcut();
             cout << "\n\n\n";
-        } catch ( Graph::GraphTooLarge() ) {
+        } catch ( Graph::GraphTooLarge e) {
             cout << "Graph too large. Try a smaller input.\n";
         }
     }

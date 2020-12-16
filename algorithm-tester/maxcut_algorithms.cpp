@@ -23,6 +23,8 @@ u2 UnitIntervalGraph::cutArrangement( const vector<u2> & cut ) const {
         throw MismatchedParameters();
 
     for ( u2 tc = 0 ; tc < k() ; tc++ ) {
+        if ( cut.at(tc) > TC.at(tc)->n() )
+            throw MismatchedParameters();
         for ( u2 v = 0 ; v < TC.at(tc)->n() ; v++ ) {
             TC.at(tc)->V.at(v)->side = (vertex::Side)( v < cut.at(tc) );
         }

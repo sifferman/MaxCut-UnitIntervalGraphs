@@ -1,15 +1,40 @@
 
-help                            Gives this page
+Help
 
--r         --random             Graph is randomized
--fi <path> --file-in <path>     Graph is loaded from file
+    help                                Gives this page
 
--b         --basic              No restrictions on structure
--p         --path               Path structure
--s         --staircase          Staircase structure
 
--bf	       --brute-force        Run brute-force algorithm
--eo        --every-other        Run every-other approx algorithm
--si        --sifferman          Run Sifferman alg (only on path)
+Graph Source
+    
+    -r, --random                        Randomize the Unit Interval Graph
 
--fo <path> --file-out <path>    Print result to file
+    -fi, --file-in <Input file path>    Graph is loaded from file
+
+
+File Cut
+
+    -fc, --file-cut                     Cut according to file input
+
+
+Graph Structure
+
+    -b, --basic                         No restrictions on structure
+
+    -p, --path                          Path structure
+
+    -s, --staircase                     Staircase structure
+
+
+Max-Cut Algorithm
+
+    -bf, --brute-force                  Run brute-force algorithm
+
+    -eo, --every-other                  Run every-other approx algorithm
+
+    -si, --sifferman                    Run Sifferman alg (only on path)
+
+
+File Out Path
+
+    -fo, --file-out <Output file path>  Change the path of the output file
+

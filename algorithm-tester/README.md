@@ -20,8 +20,12 @@ You can find all flags with `./maxcut --help`. This will display:
 >             -r, --random
 >                     Randomize the Unit Interval Graph
 > 
->             <file_in_path>
+>             -fi, --file-in <Input file path>
 >                     Graph is loaded from file
+>
+>         File Cut
+>             -fc, --file-cut
+>                         Cut according to file input
 > 
 >         Graph Structure
 >             -b, --basic
@@ -44,7 +48,7 @@ You can find all flags with `./maxcut --help`. This will display:
 >                     Run Sifferman alg (only on path)
 > 
 >         File Out Path
->             <Output file path>
+>             -fo, --file-out <Output file path>
 >                     Change the path of the output file
 
 
@@ -63,5 +67,4 @@ You can find all flags with `./maxcut --help`. This will display:
 Libraries used:
 
  * [clipp](https://github.com/muellan/clipp)
-
 
