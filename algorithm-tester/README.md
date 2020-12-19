@@ -1,5 +1,9 @@
 # Max-Cut Algorithm Tester
 
+Repo: https://github.com/E4tHam/MaxCut-UnitIntervalGraphs/edit/main/algorithm-tester/
+
+Download: https://github.com/E4tHam/MaxCut-UnitIntervalGraphs/releases/download/v1.0/algorithm-tester.zip
+
 ## Purpose
 
 This app helps display Unit Interval Graphs and applies various Max-Cut algorithms.
