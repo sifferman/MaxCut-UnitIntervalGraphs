@@ -90,7 +90,6 @@ void UnitIntervalGraph::makeTwinClasses() const {
     // for each C[j], remove all verticies in another clique
     // push
     cerr << "[WARNING]: Assuming that Unit Interval Graph already has its Twin Classes stored.\n";
-
 }
 
 
@@ -219,8 +218,9 @@ u2 Path::SI_maxcut() const {
          << "##################\n\n";
 
 
-
-    for ( u1 tc = 0; tc < k(); tc++ ) {
+    if ( k() == 1 )
+        arrangement.push_back( (float) TC.front()->n()/2 );
+    else for ( u1 tc = 0; tc < k(); tc++ ) {
         if        ( tc == 0     ) {
             arrangement.push_back( min(
                 (float) TC.at(tc)->n(),
