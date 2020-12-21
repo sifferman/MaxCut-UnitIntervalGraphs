@@ -55,6 +55,7 @@ class Graph {
 
         // maxcut algorithm
         class GraphTooLarge { } ;
+        class WrongStructure { };
         virtual u2 BF_maxcut() const ;     // 2^n
         virtual u2 EO_maxcut() const { throw WrongStructure(); }
         virtual u2 SI_maxcut() const { throw WrongStructure(); }
@@ -62,7 +63,6 @@ class Graph {
 
 
     protected:
-        class WrongStructure { };
         u2 cut() const ;
         void updateEdges() ;
         std::vector< std::shared_ptr<vertex> > V ;

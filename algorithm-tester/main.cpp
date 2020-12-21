@@ -177,6 +177,7 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
                 cout << "Cut Size according to Input: " << fileCut << "\n";
             } catch ( UnitIntervalGraph::MismatchedParameters e ) {
                 cout << "Cut not formatted correctly.\n";
+                cerr << "[ERROR]: Cut by file input failure\n";
             }
         }
         else {
@@ -191,6 +192,7 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
             cout << "\n\n\n";
         } catch ( Graph::GraphTooLarge e) {
             cout << "Graph too large. Try a smaller input.\n";
+            cerr << "[ERROR]: Brute Force Algorithm failure\n";
         }
     }
     if ( EO ) {
@@ -198,8 +200,13 @@ int main( int argc, char ** argv ) { srand( time(NULL) );
         cout << "\n\n\n";
     }
     if ( SI ) {
-        g->SI_maxcut();
-        cout << "\n\n\n";
+        try {
+            g->SI_maxcut();
+            cout << "\n\n\n";
+        } catch ( Graph::WrongStructure e) {
+            cout << "The Sifferman Algorithm only works on Path Unit Interval Graphs.\n";
+            cerr << "[ERROR]: Sifferman Algorithm failure\n";
+        }
     }
     
 
