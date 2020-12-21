@@ -6,9 +6,9 @@ Download: https://github.com/E4tHam/MaxCut-UnitIntervalGraphs/releases/download/
 
 ## Purpose
 
-This app helps display Unit Interval Graphs and applies various Max-Cut algorithms.
+The intention is to produce an app that allows for rapid testing of algorithm ideas.
 
-The intention is to prodce an app that allows for rapid testing of algorithm ideas.
+This app helps display Unit Interval Graphs and applies various Max-Cut algorithms.
 
 ## Getting Started
 
