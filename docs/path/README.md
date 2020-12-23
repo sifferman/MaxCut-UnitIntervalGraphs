@@ -1,6 +1,8 @@
-# Max-Cut Algorithm Tester
+# Path Case Solver
 
 App: https://maxcut.sifferman.dev/path/
+
+Repo: https://github.com/E4tHam/MaxCut-UnitIntervalGraphs/tree/main/docs/path
 
 ## Purpose
 
