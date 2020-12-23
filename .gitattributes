@@ -7,8 +7,8 @@ docs/path/* -linguist-documentation
 # remove
 *.md        linguist-documentation
 **/*.md     linguist-documentation
-_src/       linguist-documentation
-**/_src/    linguist-documentation
+_src/       linguist-vendored
+**/_src/    linguist-vendored
 
 # Wolfram
 *.wls       linguist-language=Wolfram
