@@ -1,0 +1,15 @@
+
+# .gitattributes $
+
+# allow 
+docs/path/* -linguist-documentation
+
+# remove
+*.md        linguist-documentation
+**/*.md     linguist-documentation
+_src/       linguist-documentation
+**/_src/    linguist-documentation
+
+# Wolfram
+*.wls       linguist-language=Wolfram
+**/*.wls    linguist-language=Wolfram
