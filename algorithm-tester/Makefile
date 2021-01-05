@@ -2,13 +2,23 @@
 # Makefile #
 
 
-CXX=g++
+# $@ ··· [target]
+# $^ ··· {Dependencies}
+
+
+# Variables
+
+EXE=maxcut
 SOURCES=main.o graph.o maxcut_algorithms.o
 HEADERS=graph.h
-EXE=maxcut
-CXXFLAGS=--std=c++11
+
 REMOVE=out.txt
 
+CXX=g++
+CXXFLAGS=--std=c++11
+
+
+# Basic Commands
 
 all: clean ${EXE}
 
@@ -22,8 +32,7 @@ clean:
 	rm -f *.o ${EXE} ${REMOVE}
 
 
-# $@ ··· [target]
-# $^ ··· {Dependencies}
+# Individual Files
 
 main.o: main.cpp
 	${CXX} ${CXXFLAGS} -c main.cpp
